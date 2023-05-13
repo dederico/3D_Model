@@ -1,0 +1,5 @@
+__pycache__
+point_e_model_cache
+venv
+.DS_Store
+cacert.pem 
