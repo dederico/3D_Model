@@ -26,5 +26,10 @@ def generate_3d_model():
     # Return the saved image file
     return send_file(image_file, mimetype='image/png')
 
+@app.route('/download/<filename>', methods=['GET'])
+def download_file(filename):
+    # Send the file as a response
+    return send_file(filename, as_attachment=True,  mimetype='application/octet-stream')
+
 if __name__ == '__main__':
     app.run(debug=True)
