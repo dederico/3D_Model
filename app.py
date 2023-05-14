@@ -1,5 +1,8 @@
-from flask import Flask, request
-
+from flask import Flask, request, send_file
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from io import BytesIO
 from ml_model import generate_3D
 
 app = Flask(__name__)
@@ -12,14 +15,16 @@ def generate_3d_model():
     guidance_scale = request.json.get('guidance_scale', 3.0)
     grid_size = request.json.get('grid_size', 32)
 
-    # Generate the 3D model using the imported function from the notebook
-    point_cloud, obj_file, _ = generate_3D(input_data, model_name, guidance_scale, grid_size)
+    # Generate the 3D model and create a matplotlib figure
+    fig = generate_3D(input_data, model_name, guidance_scale, grid_size)
 
-    # Return the generated point cloud and obj file
-    return {
-        'point_cloud': point_cloud,
-        'obj_file': obj_file
-    }
+    # Save the figure as a PNG image file
+    image_file = BytesIO()
+    plt.savefig(image_file, format='png')
+    image_file.seek(0)
+
+    # Return the saved image file
+    return send_file(image_file, mimetype='image/png')
 
 if __name__ == '__main__':
     app.run(debug=True)
